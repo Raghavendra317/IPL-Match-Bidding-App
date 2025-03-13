@@ -62,145 +62,137 @@ This repository contains a comprehensive SQL-based analysis of **IPL Match Biddi
 
 ## 📊 Sample SQL Queries & Analysis  
 
-### 🏆 1. Show the percentage of wins of each bidder in descending order  
+
+---
+
+## 📊 SQL Queries
+
+### 🏆 1. Show the percentage of wins of each bidder in the order of highest to lowest percentage.
 ```sql
-SELECT b.BidderId, bd.Bidder_name, 
-       (SUM(CASE WHEN bd.BidStatus = 'Won' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS Win_Percentage
-FROM IPL_Bidding_Details bd
-JOIN IPL_Bidder_Details b ON bd.BidderId = b.BidderId
-GROUP BY b.BidderId, bd.Bidder_name
+SELECT bd.BidderId, bd.Bidder_name, 
+       (SUM(CASE WHEN b.BidStatus = 'Won' THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS Win_Percentage
+FROM IPL_Bidder_Details bd
+JOIN IPL_Bidding_Details b ON bd.BidderId = b.BidderId
+GROUP BY bd.BidderId, bd.Bidder_name
 ORDER BY Win_Percentage DESC;
 ```
 
-*****
+---
 
-### 🏟️ 2. Display the number of matches conducted at each stadium
+### 🏟️ 2. Display the number of matches conducted at each stadium with the stadium name and city.
 ```sql
 SELECT s.Stadium_name, s.City, COUNT(m.MatchId) AS Total_Matches
 FROM IPL_Stadium s
-JOIN IPL_Match_Schedule m ON s.StadiumId = m.StadiumId
-GROUP BY s.Stadium_name, s.City
-ORDER BY Total_Matches DESC;
+JOIN IPL_Match_Schedule ms ON s.StadiumId = ms.StadiumId
+JOIN IPL_Match m ON ms.MatchId = m.MatchId
+GROUP BY s.Stadium_name, s.City;
 ```
-----
 
-### 🏅 3. Find the percentage of wins by a team that has won the toss in a given stadium
+---
+
+### 🎲 3. In a given stadium, what is the percentage of wins by a team that has won the toss?
 ```sql
-SELECT m.StadiumId, s.Stadium_name, 
-       (SUM(CASE WHEN m.TossWinner = m.MatchWinner THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS Toss_Win_Percentage
+SELECT m.TossWinner, COUNT(*) AS Total_Toss_Wins,
+       (SUM(CASE WHEN m.TossWinner = m.MatchWinner THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS Win_Percentage
 FROM IPL_Match m
-JOIN IPL_Stadium s ON m.StadiumId = s.StadiumId
-WHERE s.Stadium_name = 'M. Chinnaswamy Stadium' -- Change stadium name as needed
-GROUP BY m.StadiumId, s.Stadium_name;
+GROUP BY m.TossWinner;
 ```
 
-----
+---
 
-
-### 📈 4. Show the total bids along with the bid team and team name
+### 🎰 4. Show the total bids along with the bid team and team name.
 ```sql
-SELECT bd.BidTeam, t.Team_name, COUNT(*) AS Total_Bids
-FROM IPL_Bidding_Details bd
-JOIN IPL_Team t ON bd.BidTeam = t.TeamId
-GROUP BY bd.BidTeam, t.Team_name
-ORDER BY Total_Bids DESC;
+SELECT b.BidTeam, t.Team_name, COUNT(*) AS Total_Bids
+FROM IPL_Bidding_Details b
+JOIN IPL_Team t ON b.BidTeam = t.TeamId
+GROUP BY b.BidTeam, t.Team_name;
 ```
 
-----
+---
 
-
-### 🏆 5. Show the team ID who won the match as per win details
+### 🏅 5. Show the team ID who won the match as per the win details.
 ```sql
 SELECT MatchId, MatchWinner AS Winning_Team_ID
-FROM IPL_Match
-WHERE WinDetails IS NOT NULL;
+FROM IPL_Match;
 ```
 
-----
+---
 
-
-### 📊 6. Display total matches played, won, and lost by each team
+### 📊 6. Display the total matches played, total matches won, and total matches lost by the team along with its team name.
 ```sql
 SELECT t.Team_name, 
-       COUNT(m.MatchId) AS Matches_Played,
-       SUM(CASE WHEN m.MatchWinner = t.TeamId THEN 1 ELSE 0 END) AS Matches_Won,
-       SUM(CASE WHEN m.MatchWinner != t.TeamId THEN 1 ELSE 0 END) AS Matches_Lost
-FROM IPL_Team t
-JOIN IPL_Match m ON t.TeamId IN (m.TeamId1, m.TeamId2)
-GROUP BY t.Team_name;
+       ts.Matches_played, ts.Matches_won, ts.Matches_lost
+FROM IPL_Team_Standings ts
+JOIN IPL_Team t ON ts.TeamId = t.TeamId;
 ```
 
-----
+---
 
-
-### 🎯 7. Display bowlers for the Mumbai Indians team
+### 🎯 7. Display the bowlers for the Mumbai Indians team.
 ```sql
-SELECT p.Player_name 
+SELECT p.Player_name, tp.Player_role 
 FROM IPL_Player p
 JOIN IPL_Team_Players tp ON p.PlayerId = tp.PlayerId
 JOIN IPL_Team t ON tp.TeamId = t.TeamId
 WHERE t.Team_name = 'Mumbai Indians' AND tp.Player_role = 'Bowler';
 ```
 
-----
+---
 
-
-### 🔥 8. Count all-rounders in each team and list teams with more than 4 all-rounders
+### 🌟 8. How many all-rounders are there in each team, display the teams with more than 4 all-rounders in descending order.
 ```sql
-SELECT t.Team_name, COUNT(*) AS All_Rounders_Count
-FROM IPL_Team t
-JOIN IPL_Team_Players tp ON t.TeamId = tp.TeamId
+SELECT t.Team_name, COUNT(*) AS AllRounder_Count
+FROM IPL_Team_Players tp
+JOIN IPL_Team t ON tp.TeamId = t.TeamId
 WHERE tp.Player_role = 'All-Rounder'
 GROUP BY t.Team_name
 HAVING COUNT(*) > 4
-ORDER BY All_Rounders_Count DESC;
+ORDER BY AllRounder_Count DESC;
 ```
 
-----
+---
 
-
-### 🏆 9. Total bidder points for those who bid on CSK when they won in M. Chinnaswamy Stadium (Year-wise)
+### 📢 9. Total bidders' points for each bidding status of those bidders who bid on CSK when they won the match in M. Chinnaswamy Stadium bidding year-wise.
 ```sql
-SELECT bd.BidStatus, YEAR(bd.BidDate) AS Bidding_Year, SUM(bp.Total_points) AS Total_Bidder_Points
-FROM IPL_Bidding_Details bd
-JOIN IPL_Bidder_Points bp ON bd.BidderId = bp.BidderId
-JOIN IPL_Match m ON bd.BidTeam = m.MatchWinner
-JOIN IPL_Stadium s ON m.StadiumId = s.StadiumId
-JOIN IPL_Team t ON bd.BidTeam = t.TeamId
-WHERE t.Team_name = 'Chennai Super Kings' AND s.Stadium_name = 'M. Chinnaswamy Stadium'
-GROUP BY bd.BidStatus, YEAR(bd.BidDate)
+SELECT b.BidStatus, YEAR(b.BidDate) AS Bid_Year, SUM(bp.Total_points) AS Total_Bidder_Points
+FROM IPL_Bidding_Details b
+JOIN IPL_Bidder_Points bp ON b.BidderId = bp.BidderId
+JOIN IPL_Match m ON b.ScheduleId = m.MatchId
+JOIN IPL_Stadium s ON m.MatchId = s.StadiumId
+WHERE b.BidTeam = (SELECT TeamId FROM IPL_Team WHERE Team_name = 'Chennai Super Kings')
+AND m.MatchWinner = b.BidTeam AND s.Stadium_name = 'M. Chinnaswamy Stadium'
+GROUP BY b.BidStatus, YEAR(b.BidDate)
 ORDER BY Total_Bidder_Points DESC;
 ```
 
-----
+---
 
-
-### 🎯 10. Extract top 5 bowlers & all-rounders with highest wickets (without using JOINs)
+### 🔥 10. Extract the Bowlers and All-Rounders that are in the 5 highest number of wickets.
 ```sql
-SELECT Team_name, Player_name, Player_role 
-FROM IPL_Player 
-WHERE Player_role IN ('Bowler', 'All-Rounder') 
-ORDER BY CAST(SUBSTRING_INDEX(performance_dtls, ' ', 1) AS UNSIGNED) DESC
+SELECT Player_name, Player_role, Performance_dtls
+FROM IPL_Player
+WHERE Player_role IN ('Bowler', 'All-Rounder')
+AND Performance_dtls LIKE '%wickets%'
+ORDER BY CAST(SUBSTRING_INDEX(Performance_dtls, ' wickets', 1) AS UNSIGNED) DESC
 LIMIT 5;
 ```
 
-----
+---
 
-
-### 🏏 11. Show the percentage of toss wins for each bidder in descending order
+### 🏆 11. Show the percentage of toss wins of each bidder in descending order.
 ```sql
 SELECT bd.BidderId, bd.Bidder_name, 
-       (SUM(CASE WHEN m.TossWinner = bd.BidTeam THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS Toss_Win_Percentage
-FROM IPL_Bidding_Details bd
-JOIN IPL_Match m ON bd.BidTeam = m.TossWinner
+       (SUM(CASE WHEN m.TossWinner = b.BidTeam THEN 1 ELSE 0 END) * 100.0 / COUNT(*)) AS Toss_Win_Percentage
+FROM IPL_Bidder_Details bd
+JOIN IPL_Bidding_Details b ON bd.BidderId = b.BidderId
+JOIN IPL_Match m ON b.ScheduleId = m.MatchId
 GROUP BY bd.BidderId, bd.Bidder_name
 ORDER BY Toss_Win_Percentage DESC;
 ```
 
-----
+---
 
-
-### 📅 12. Find the IPL season with the longest duration
+### 🏆 12. Find the IPL season with the maximum duration.
 ```sql
 SELECT TournamentId, Tournament_name, DATEDIFF(To_date, From_date) AS Duration
 FROM IPL_Tournament
@@ -208,39 +200,49 @@ ORDER BY Duration DESC
 LIMIT 1;
 ```
 
-----
+---
 
-
-### 📅 13. Calculate total points month-wise for 2017 bid year (Using Joins)
+### 📆 13. Calculate total points month-wise for 2017 bid year.
 ```sql
-SELECT b.BidderId, b.Bidder_name, YEAR(bd.BidDate) AS Bid_Year, MONTH(bd.BidDate) AS Bid_Month, SUM(bp.Total_points) AS Total_Points
-FROM IPL_Bidding_Details bd
-JOIN IPL_Bidder_Details b ON bd.BidderId = b.BidderId
-JOIN IPL_Bidder_Points bp ON b.BidderId = bp.BidderId
-WHERE YEAR(bd.BidDate) = 2017
-GROUP BY b.BidderId, b.Bidder_name, YEAR(bd.BidDate), MONTH(bd.BidDate)
-ORDER BY Total_Points DESC, Bid_Month ASC;
+SELECT BidderId, Bidder_name, YEAR(BidDate) AS Year, MONTH(BidDate) AS Month, SUM(Total_points) AS Total_Points
+FROM IPL_Bidder_Points
+WHERE YEAR(BidDate) = 2017
+GROUP BY BidderId, Bidder_name, YEAR(BidDate), MONTH(BidDate)
+ORDER BY Total_Points DESC, Month ASC;
 ```
 
 ---
 
-
-### 📅 14. Top 3 and Bottom 3 bidders based on total bidding points for 2018
+### 🔄 14. Rewrite query 13 using subqueries.
 ```sql
-(SELECT BidderId, Bidder_name, Total_points
- FROM IPL_Bidder_Points
- WHERE YEAR(BidDate) = 2018
- ORDER BY Total_points DESC
- LIMIT 3)
-UNION
-(SELECT BidderId, Bidder_name, Total_points
- FROM IPL_Bidder_Points
- WHERE YEAR(BidDate) = 2018
- ORDER BY Total_points ASC
- LIMIT 3);
- ```
+SELECT * FROM (
+    SELECT BidderId, Bidder_name, YEAR(BidDate) AS Year, MONTH(BidDate) AS Month, SUM(Total_points) AS Total_Points
+    FROM IPL_Bidder_Points
+    WHERE YEAR(BidDate) = 2017
+    GROUP BY BidderId, Bidder_name, YEAR(BidDate), MONTH(BidDate)
+) AS SubQuery
+ORDER BY Total_Points DESC, Month ASC;
+```
 
-----
+---
+
+### 🏆 15. Get the top 3 and bottom 3 bidders based on total bidding points for 2018.
+```sql
+(SELECT BidderId, Bidder_name, Total_points FROM IPL_Bidder_Points WHERE YEAR(BidDate) = 2018 ORDER BY Total_points DESC LIMIT 3)
+UNION
+(SELECT BidderId, Bidder_name, Total_points FROM IPL_Bidder_Points WHERE YEAR(BidDate) = 2018 ORDER BY Total_points ASC LIMIT 3);
+```
+
+---
+
+### 🎓 16. Create tables for student details and backup with a trigger.
+```sql
+CREATE TRIGGER student_backup BEFORE INSERT ON Student_details
+FOR EACH ROW INSERT INTO Student_details_backup VALUES (NEW.Student_id, NEW.Student_name, NEW.mail_id, NEW.mobile_no);
+```
+
+
+
 
 
 ## 🏅 Conclusion
