@@ -16,13 +16,20 @@ The **IPL Match Bidding App** is a data-driven system designed to analyze **bidd
 ## 📊 Database Schema  
 
 The database consists of the following **normalized tables**:  
-- **IPL_User** – Stores bidder and admin details  
-- **IPL_Stadium** – Contains stadium names, cities, and capacities  
-- **IPL_Team & IPL_Player** – Stores teams and player performance details  
-- **IPL_Match & IPL_Match_Schedule** – Tracks match schedules, winners, and statistics  
-- **IPL_Bidding_Details** – Captures user bids with timestamps and statuses  
-- **IPL_Bidder_Points** – Records bidding performance and rankings  
-- **IPL_Team_Standings** – Maintains tournament standings for each team  
+
+- **IPL_User** – Stores bidder and admin details.
+- **IPL_Bidder_Details** – Contains bidder information, including contact details.
+- **IPL_Bidding_Details** – Captures user bids with timestamps and statuses.
+- **IPL_Bidder_Points** – Records bidding performance and rankings.
+- **IPL_Tournament** – Stores tournament details like name, date range, and team count.
+- **IPL_Match** – Tracks match details, including teams, toss winners, and match winners.
+- **IPL_Match_Schedule** – Contains match schedules, venues, and timings.
+- **IPL_Stadium** – Stores stadium names, cities, capacities, and addresses.
+- **IPL_Team** – Maintains details of all participating teams.
+- **IPL_Team_Players** – Links players to their respective teams and roles.
+- **IPL_Player** – Contains individual player details and performance stats.
+- **IPL_Team_Standings** – Maintains tournament standings for each team, including match results and points.
+
 
 ---
 
