@@ -26,6 +26,9 @@ The database consists of the following **normalized tables**:
 
 ---
 
+## 🛠️ ER Diagram
+![ER Diagram](https://github.com/Raghavendra317/IPL-Match-Bidding-App/blob/main/ER%20Diagram.png)
+
 ## 📌 Key SQL Queries & Insights  
 
 ### 🏆 **Bidding & Performance Analysis**  
