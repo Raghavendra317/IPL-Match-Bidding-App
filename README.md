@@ -1,5 +1,5 @@
 # 🏏 IPL Match Bidding App – Data Insights & Analysis  
-![IPL Logo](https://github.com/nikkvd/IPL-2024/blob/main/Images/IPL%20Logo.jpg?raw=true)
+![IPL Logo](https://github.com/Raghavendra317/IPL-Match-Bidding-App/blob/main/IPL%20Match%20Bidding%20App.webp)
 ## 📌 Project Overview  
 The **IPL Match Bidding App** is a data-driven system designed to analyze **bidding patterns, match statistics, and team performances** using SQL. This project builds a **relational database** to track **bids, match outcomes, and user performance**, enabling insights into **bidding trends, win probabilities, and team strategies**.
 
@@ -62,10 +62,8 @@ This repository contains a comprehensive SQL-based analysis of **IPL Match Biddi
 
 ## 📊 Sample SQL Queries & Analysis  
 
-
 ---
 
-## 📊 SQL Queries
 
 ### 🏆 1. Show the percentage of wins of each bidder in the order of highest to lowest percentage.
 ```sql
@@ -241,9 +239,7 @@ CREATE TRIGGER student_backup BEFORE INSERT ON Student_details
 FOR EACH ROW INSERT INTO Student_details_backup VALUES (NEW.Student_id, NEW.Student_name, NEW.mail_id, NEW.mobile_no);
 ```
 
-
-
-
+----
 
 ## 🏅 Conclusion
 This repository provides deep insights into IPL bidding trends and match statistics using advanced SQL queries. Feel free to contribute or enhance the project!
