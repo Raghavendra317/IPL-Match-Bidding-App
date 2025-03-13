@@ -1,5 +1,45 @@
-# 🏏 IPL Match Bidding App – Data Insights & Analysis  
+# 🏏  Pie-in-the-Sky: IPL Bidding App
 ![IPL Logo](https://github.com/Raghavendra317/IPL-Match-Bidding-App/blob/main/IPL%20Match%20Bidding%20App.webp)
+
+## 📌 App Overview
+Pie-in-the-Sky is a mobile application that allows registered users to legally bid on IPL matches. Users can predict match winners, earn points based on correct predictions, and compete on a leaderboard. Admins manage match rosters, update details, and maintain system functionalities.
+
+---
+
+## 🚀 Features
+### 📝 User Registration
+##### ✔ New users register with their **mobile number, email ID, and password**.
+##### ✔ Registered users can participate in bidding.
+---
+### 🏏 Match Details
+##### ✔ Displays **playing teams, match venue, and current standings** in the points table.
+##### ✔ Updates **winner details** after each match.
+##### ✔ Updates **team standings** and bidder points.
+##### ✔ Sends **notifications** to users when required.
+---
+### 🎯 Predict Winner
+##### ✔ Users predict the **match winner before the toss**.
+##### ✔ Bids can be changed **only until the toss occurs**.
+##### ✔ Users **cannot see other users' predictions**.
+##### ✔ Matches can have **different start times** due to disruptions like rain.
+---
+### 🏆 Point System
+✔ Users **gain points** for correct predictions, but **do not lose points** for incorrect ones.
+✔ **Dynamic point allocation** based on team standings:
+   - **Tournament Start:** ✅ **2 points** for a correct prediction.
+   - **Points Difference ≤ 6:**
+     - Predicting **higher-ranked team wins**: ✅ **2 points**.
+     - Predicting **lower-ranked team wins**: ✅ **3 points**.
+   - **Points Difference > 6:**
+     - Predicting **higher-ranked team wins**: ✅ **2 points**.
+     - Predicting **lower-ranked team wins**: ✅ **5 points**.
+---
+### 📊 Leaderboard
+##### ✔ Users can view their **points and ranking** in real-time.
+##### ✔ Displays the **top 3 users** on the leaderboard
+
+---
+
 ## 📌 Project Overview  
 The **IPL Match Bidding App** is a data-driven system designed to analyze **bidding patterns, match statistics, and team performances** using SQL. This project builds a **relational database** to track **bids, match outcomes, and user performance**, enabling insights into **bidding trends, win probabilities, and team strategies**.
 
